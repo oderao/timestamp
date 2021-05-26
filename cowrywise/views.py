@@ -37,13 +37,23 @@ def timestamp_list(request):
 	"""
 	List all timestamps
 	"""
+	import json
 	if request.method == 'GET':
-		data = {'uuid':generate_uuid(),'timestamp':generate_timestamp()}
+		data = {'timestamp':generate_timestamp()}
 		serializer = TimeStampSerializer(data=data)
 		if serializer.is_valid():
 			serializer.save()
 		list_of_time_stamps = TimeStamp.objects.all().order_by('-timestamp')
 		serializer = TimeStampSerializer(list_of_time_stamps, many=True)
-		return JsonResponse(serializer.data, safe=False)
+		if serializer.data:
+			old_dict = json.loads(json.dumps(serializer.data))
+			final_data = []
+			for i in old_dict:
+				final_data.append({
+					i['timestamp']:generate_uuid()
+					})
+		
+			return JsonResponse(final_data, safe=False)
+		return JsonResponse({},safe=False)
 
 
