@@ -42,7 +42,7 @@ def timestamp_list(request):
 		serializer = TimeStampSerializer(data=data)
 		if serializer.is_valid():
 			serializer.save()
-		list_of_time_stamps = TimeStamp.objects.all()
+		list_of_time_stamps = TimeStamp.objects.all().order_by('-timestamp')
 		serializer = TimeStampSerializer(list_of_time_stamps, many=True)
 		return JsonResponse(serializer.data, safe=False)
 
